@@ -1,16 +1,19 @@
 // axios.js
-import axios from 'axios';
+import axios from "axios";
 
-const api = axios.create({
-  baseURL: 'http://localhost:8080',
-});
+axios.defaults.baseURL = "http://localhost:8080";
+axios.defaults.headers.post["Content-Type"] = "application/json";
 
-api.interceptors.request.use(config => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+axios.defaults.withCredentials = true;
 
-export default api;
+// Define request function
+const request = (method, url, data) => {
+  return axios({
+    method: method,
+    url: url,
+    data: data,
+  });
+};
+
+// Export it correctly
+export default request;

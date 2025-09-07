@@ -1,33 +1,98 @@
-import { useState } from 'react';
-import api from '../services/axios';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import request from "../services/axios";
 
-function Register() {
-  const [form, setForm] = useState({ username: '', password: '' });
+export default function Register() {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    login: "",
+    password: "",
+  });
 
-  const handleChange = e => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const navigate = useNavigate();
+
+  const onChangeHandler = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
-    try {
-      const res = await api.post('/register', form);
-      alert('Registration successful');
-    } catch (err) {
-      alert(err.response?.data || 'Registration failed');
-    }
+  const onRegister = (event) => {
+    event.preventDefault();
+    request("POST", "/register", formData)
+      .then((response) => {
+        navigate("/books");
+      })
+      .catch((error) => {
+        console.error("Invalid credentials.");
+        navigate("/register");
+      });
   };
 
   return (
-    <div>
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
-        <input name="username" placeholder="Username" onChange={handleChange} />
-        <input name="password" type="password" placeholder="Password" onChange={handleChange} />
-        <button type="submit">Register</button>
-      </form>
-    </div>
+    <form onSubmit={onRegister} style={{ marginTop: "30px" }}>
+      <div className="form-outline mb-4">
+        <input
+          type="text"
+          id="firstName"
+          name="firstName"
+          className="form-control"
+          onChange={onChangeHandler}
+          value={formData.firstName}
+        />
+        <label className="form-label" htmlFor="firstName">
+          First Name
+        </label>
+      </div>
+
+      <div className="form-outline mb-4">
+        <input
+          type="text"
+          id="lastName"
+          name="lastName"
+          className="form-control"
+          onChange={onChangeHandler}
+          value={formData.lastName}
+        />
+        <label className="form-label" htmlFor="lastName">
+          Last Name
+        </label>
+      </div>
+
+      <div className="form-outline mb-4">
+        <input
+          type="text"
+          id="loginName"
+          name="login"
+          className="form-control"
+          onChange={onChangeHandler}
+          value={formData.login}
+        />
+        <label className="form-label" htmlFor="loginName">
+          Username
+        </label>
+      </div>
+
+      <div className="form-outline mb-4">
+        <input
+          type="password"
+          id="loginPassword"
+          name="password"
+          className="form-control"
+          onChange={onChangeHandler}
+          value={formData.password}
+        />
+        <label className="form-label" htmlFor="loginPassword">
+          Password
+        </label>
+      </div>
+
+      <button type="submit" className="btn btn-primary btn-block mb-4">
+        Register
+      </button>
+    </form>
   );
 }
-
-export default Register;
