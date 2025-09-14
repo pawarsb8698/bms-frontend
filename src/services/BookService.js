@@ -28,3 +28,17 @@ export const updateBook = (bookId, formData) =>
 
 export const deleteBook = (bookId) =>
   axios.delete(REST_API_BASE_URL + "/" + bookId, { withCredentials: true });
+
+export const markAsBorrowed = (bookId) => 
+    axios.get(REST_API_BASE_URL + "/borrow/" + bookId, { withCredentials: true });
+
+export const markAsUnBorrowed = (bookId) => 
+    axios.get(REST_API_BASE_URL + "/return/" + bookId, { withCredentials: true });
+
+export const getUsers = () => {
+  return axios.get(REST_API_BASE_URL, {
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("auth_token"),
+    },
+  });
+};

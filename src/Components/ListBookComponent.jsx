@@ -1,58 +1,102 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react';
+import { AuthContext } from "../context/AuthContext";
 import '../App.css';
-import { listBooks } from '../services/BookService'
+import { listBooks, markAsBorrowed, markAsUnBorrowed } from '../services/BookService';
 import { useNavigate } from 'react-router-dom';
 
+// Utility to group books into chunks of 5
+const chunkArray = (array, size) => {
+  const result = [];
+  for (let i = 0; i < array.length; i += size) {
+    result.push(array.slice(i, i + size));
+  }
+  return result;
+};
+
+const getExtension = (filename) => {
+  return filename.split('.').pop();
+};
+
 const ListBookComponent = () => {
+  const { role } = useContext(AuthContext);
   const [books, setBooks] = useState([]);
+  const navigator = useNavigate();
+
 
   useEffect(() => {
-    listBooks().then((response) => {
-      setBooks(response.data);
-    }).catch(error => {
-      console.error(error);
-    })
+    listBooks()
+      .then(response => setBooks(response.data))
+      .catch(error => console.error(error));
   }, []);
-
-  const navigator = useNavigate();
 
   function addNewBook() {
     navigator('/add-book');
   }
 
-  const handleRowClick = (id) => {
+  const borrowBook = (bookId) => {
+    markAsBorrowed(bookId)
+      .then(response => setBooks(response.data))
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  const returnBook = (bookId) => {
+    markAsUnBorrowed(bookId)
+      .then(response => setBooks(response.data))
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  const handleRowClick = id => {
     navigator(`/edit-book/${id}`);
   };
 
   return (
-    <div className='container'>
-      <h2 className='text-center'>List of Book</h2>
-      <button className='btn btn-primary mb-2' onClick={addNewBook}>Add Book</button>
-      <table>
-        <thead>
-          <tr>
-            <th>Book Id</th>
-            <th>Book Name</th>
-            <th>Author</th>
-            <th>genre</th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            books.map(book =>
-              <tr key={book.bookId}
-                onClick={() => handleRowClick(book.bookId)}>
-                <td>{book.bookId}</td>
-                <td>{book.bookName}</td>
-                <td>{book.author}</td>
-                <td>{book.genre}</td>
-              </tr>
-            )
-          }
-        </tbody>
-      </table>
+    <div>
+      {role == "ADMIN" && <button onClick={() => addNewBook()} className="btn btn-primary me-2">
+        Add book
+      </button>
+      }
+      {chunkArray(books, 5).map((bookGroup, index) => (
+        <div key={index} className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {bookGroup.map(book => (
+            <div key={book.bookId} className="bg-white shadow-md rounded-2xl overflow-hidden flex flex-col">
+              <img
+                src={`http://localhost:8080/api/books/images/${book.bookId}.${getExtension(book.imageName)}`}
+                alt={book.bookName}
+                className="h-56 w-full object-cover"
+              />
+              <div className="p-4 flex flex-col flex-1">
+                <h2 className="text-lg font-bold">{book.bookName}</h2>
+                <p className="text-sm text-gray-600">Author: {book.author}</p>
+                <p className="text-sm text-gray-500">Genre: {book.genre}</p>
+                <p className="text-sm text-gray-600">Borrowed Date: {book.borrowedDate}</p>
+                <p className="text-sm text-gray-500">Return Due Date: {book.returnDueDate}</p>
+                <div className="mt-auto">
+                  {book.borrowed ? (
+                    <button onClick={() => returnBook(book.bookId)} className="btn btn-primary me-2">
+                      Return
+                    </button>
+                  ) : (
+                    <button onClick={() => borrowBook(book.bookId)} className="btn btn-primary me-2">
+                      Borrow
+                    </button>
+                  )}
+                  {role == "ADMIN" &&
+                    <button onClick={() => handleRowClick(book.bookId)} className="btn btn-primary me-2">
+                      Edit
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
-  )
-}
+  );
+};
 
-export default ListBookComponent
+export default ListBookComponent;

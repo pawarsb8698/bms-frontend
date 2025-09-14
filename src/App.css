@@ -8,6 +8,51 @@
   color: white;
 }
 
-th:nth-child(1), td:nth-child(1) {
+th:nth-child(1),
+td:nth-child(1) {
   width: 10% !important;
+}
+
+body,
+html {
+  height: 100%;
+  margin: 0;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  /* full height */
+}
+
+.content {
+  flex: 1;
+  /* pushes footer down */
+}
+
+footer {
+  background: #222;
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
+
+img {
+  width: 100%;
+  height: 50%;
+      object-fit: inherit !important;
+}
+
+.bg-white {
+  max-width: 300px !important;
+  border: 2px solid black !important;
+  padding: 10px;
+  margin: 10px;
+  flex: 1;
+  height: 600px;
+}
+
+.p-6 {
+  display: flex;
 }
