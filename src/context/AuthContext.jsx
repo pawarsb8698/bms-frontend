@@ -4,37 +4,39 @@ import { jwtDecode } from "jwt-decode";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [token, setToken] = useState(() => localStorage.getItem("auth_token"));
-    const [role, setRole] = useState(null);
+  const [token, setToken] = useState(() => localStorage.getItem("auth_token"));
+  const [role, setRole] = useState(null);
 
-    useEffect(() => {
-        if (token) {
-            try {
-                const decoded = jwtDecode(token);
-                setRole(decoded?.userType);
-            } catch (err) {
-                console.error("Invalid token", err);
-                setRole(null);
-            }
-        } else {
-            setRole(null);
-        }
-    }, [token]);
-
-    const setRoleAfterLogin = (newToken) => {
-        localStorage.setItem("auth_token", newToken);
-        setToken(newToken);
-    };
-
-    const logout = () => {
-        localStorage.removeItem("auth_token");
-        setToken(null);
+  useEffect(() => {
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setRole(decoded?.userType);
+      } catch (err) {
+        console.error("Invalid token", err);
         setRole(null);
-    };
+      }
+    } else {
+      setRole(null);
+    }
+  }, [token]);
 
-    return (
-        <AuthContext.Provider value={{ token, role, setRoleAfterLogin, logout }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  const setRoleAfterLogin = (newToken) => {
+    localStorage.setItem("auth_token", newToken);
+    setToken(newToken);
+    const decoded = jwtDecode(token);
+    setRole(decoded?.userType);
+  };
+
+  const logout = () => {
+    localStorage.removeItem("auth_token");
+    setToken(null);
+    setRole(null);
+  };
+
+  return (
+    <AuthContext.Provider value={{ token, role, setRoleAfterLogin, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
