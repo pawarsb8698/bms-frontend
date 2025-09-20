@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import request from "../services/axios";
 
+
 export default function Register() {
+    
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -24,7 +26,12 @@ export default function Register() {
     event.preventDefault();
     request("POST", "/register", formData)
       .then((response) => {
-        navigate("/books");
+        if (response.data.userType === 'SUPERUSER') {
+          navigate("/users");
+        } else {
+          navigate("/books");
+
+        }
       })
       .catch((error) => {
         console.error("Invalid credentials.");

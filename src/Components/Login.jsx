@@ -1,15 +1,12 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import request from "../services/axios";
-import { AuthContext } from '../context/AuthContext';
 
 export default function Login() {
 
-  const { setRoleAfterLogin } = useContext(AuthContext);
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { role } = useContext(AuthContext);
 
   const onChangeHandler = (event) => {
     const { name, value } = event.target;
@@ -24,8 +21,7 @@ export default function Login() {
     event.preventDefault();
     request("POST", "/login", { login, password })
       .then((response) => {
-        setRoleAfterLogin(response.data.token);
-        if (role === 'SUPERUSER') {
+        if (response.data.userType === 'SUPERUSER') {
           navigate("/users");
         } else {
           navigate("/books");

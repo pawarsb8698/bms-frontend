@@ -1,16 +1,11 @@
 import React from "react";
+import '../App.css';
+
 
 export const FooterComponent = () => {
   return (
     <footer
       className="bg-dark text-light py-3"
-      style={{
-        position: "fixed",
-        bottom: 0,
-        left: 0,
-        width: "100%",
-        zIndex: 1000,
-      }}
     >
       <div className="container d-flex flex-column flex-md-row justify-content-between align-items-center">
         {/* Left - App Info */}
