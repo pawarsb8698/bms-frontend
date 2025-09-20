@@ -6,12 +6,14 @@ import {
   markAsUnBorrowed,
 } from "../services/BookService";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+
 
 const getExtension = (filename) => filename.split(".").pop();
 
 const ListBookComponent = () => {
-  const { role } = useContext(AuthContext);
   const [books, setBooks] = useState([]);
+  const [role, setRole] = useState([]);
   const [currentPage, setCurrentPage] = useState(0); // backend uses 0-based
   const [totalPages, setTotalPages] = useState(0);
   const booksPerPage = 8;
@@ -25,6 +27,8 @@ const ListBookComponent = () => {
   const fetchBooks = (page) => {
     listBooks(page, booksPerPage)
       .then((response) => {
+        const decoded = jwtDecode(localStorage.getItem('auth_token'));
+        setRole(decoded?.userType);
         setBooks(response.data.content);
         setTotalPages(response.data.totalPages);
       })

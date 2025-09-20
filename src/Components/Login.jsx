@@ -21,6 +21,7 @@ export default function Login() {
     event.preventDefault();
     request("POST", "/login", { login, password })
       .then((response) => {
+        localStorage.setItem("auth_token", response.data.token);
         if (response.data.userType === 'SUPERUSER') {
           navigate("/users");
         } else {

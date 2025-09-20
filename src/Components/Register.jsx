@@ -26,6 +26,7 @@ export default function Register() {
     event.preventDefault();
     request("POST", "/register", formData)
       .then((response) => {
+        localStorage.setItem("auth_token", response.data.token);
         if (response.data.userType === 'SUPERUSER') {
           navigate("/users");
         } else {

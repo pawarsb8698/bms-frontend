@@ -11,6 +11,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       try {
+        localStorage.setItem("auth_token", token);
         const decoded = jwtDecode(token);
         setRole(decoded?.userType);
         setUserId(decoded?.userId);
@@ -40,7 +41,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, role,userId, logout }}>
+    <AuthContext.Provider value={{ token, role, userId, logout }}>
       {children}
     </AuthContext.Provider>
   );
