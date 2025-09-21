@@ -135,7 +135,7 @@ const ListBookComponent = () => {
                     <strong>Genre:</strong> {book.genre}
                   </p>
 
-                  {book.borrowed ? (
+                  {book.bookStatus != 'AVAILABLE' ? (
                     <div className="mb-3">
                       <p className="card-text mb-1">
                         <strong>Borrowed Date:</strong> {book.borrowedDate}
@@ -152,7 +152,7 @@ const ListBookComponent = () => {
                   )}
 
                   <div className="mt-auto">
-                    {book.borrowed ? (
+                    {book.bookStatus != 'AVAILABLE' ? (
                       <button className="btn btn-warning btn-sm me-2">
                         Approaval pending
                       </button>

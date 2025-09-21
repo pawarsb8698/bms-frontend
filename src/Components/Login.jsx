@@ -44,8 +44,12 @@ export default function Login() {
     request("POST", "/login", { login, password })
       .then((response) => {
         localStorage.setItem("auth_token", response.data.token);
-        if (response.data.userType === "SUPERUSER") navigate("/users");
-        else navigate("/books");
+        if (response.data.userType === 'SUPERUSER') {
+          navigate("/users");
+        } else {
+          navigate("/dashboard");
+
+        }
       })
       .catch(() => {
         console.error("Invalid credentials.");

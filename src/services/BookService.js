@@ -44,3 +44,5 @@ export const getUsers = () =>
   axios.get(REST_API_BASE_URL, {
     headers: { Authorization: "Bearer " + localStorage.getItem("auth_token") },
   });
+export const getBorrowedBook = (userId) =>
+  axios.get(`${REST_API_BASE_URL}/borrowedBook`, { withCredentials: true });
