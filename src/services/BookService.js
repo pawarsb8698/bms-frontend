@@ -36,13 +36,11 @@ export const markAsBorrowed = (bookId) =>
   axios.get(`${REST_API_BASE_URL}/borrow/${bookId}`, { withCredentials: true });
 
 // ✅ Return a book (returns Page<BookDto>)
-export const markAsUnBorrowed = (bookId) =>
+export const returnBook = (bookId) =>
   axios.get(`${REST_API_BASE_URL}/return/${bookId}`, { withCredentials: true });
 
-// (Optional - you probably don’t need this)
-export const getUsers = () =>
-  axios.get(REST_API_BASE_URL, {
-    headers: { Authorization: "Bearer " + localStorage.getItem("auth_token") },
-  });
-export const getBorrowedBook = (userId) =>
+export const getBorrowedBook = () =>
   axios.get(`${REST_API_BASE_URL}/borrowedBook`, { withCredentials: true });
+
+export const withdrawBook = () =>
+  axios.get(`${REST_API_BASE_URL}/withdrawApproval`, { withCredentials: true });

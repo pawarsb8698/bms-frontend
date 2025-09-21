@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from "react";
 import {
   listBooks,
   markAsBorrowed,
-  markAsUnBorrowed,
 } from "../services/BookService";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -48,12 +47,6 @@ const ListBookComponent = () => {
   const borrowBook = (bookId) => {
     markAsBorrowed(bookId)
       .then(() => fetchBooks(currentPage)) // refresh current page
-      .catch((error) => console.error(error));
-  };
-
-  const returnBook = (bookId) => {
-    markAsUnBorrowed(bookId)
-      .then(() => fetchBooks(currentPage))
       .catch((error) => console.error(error));
   };
 

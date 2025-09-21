@@ -8,7 +8,7 @@ import "./App.css";
 import { FooterComponent } from "./Components/FooterComponent";
 import { HeaderComponent } from "./Components/HeaderComponent";
 import ListBookComponent from "./Components/ListBookComponent";
-import BookClubDashBoard  from "./Components/BookClubDashBoard";
+import BookClubDashBoard from "./Components/BookClubDashBoard";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -31,6 +31,10 @@ function App() {
             <Route path="/dashboard" element={<BookClubDashBoard />} />
             <Route path='/books' element={<ListBookComponent />}></Route>
             <Route path='/add-book' element={<BookComponent />}></Route>
+            <Route
+              path="/awaiting-approval"
+              element={<AwaitingBookApproval />}
+            ></Route>
             <Route path='/edit-book/:id' element={<BookComponent />}></Route>
           </Routes>
         </AuthProvider>
