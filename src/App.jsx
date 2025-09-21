@@ -23,20 +23,23 @@ function App() {
       <BrowserRouter>
         <AuthProvider>
           <HeaderComponent />
-          <Routes>
-            <Route path="/" element={<Login />}></Route>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/users" element={<BookClubUsers />} />
-            <Route path="/dashboard" element={<BookClubDashBoard />} />
-            <Route path='/books' element={<ListBookComponent />}></Route>
-            <Route path='/add-book' element={<BookComponent />}></Route>
-            <Route
-              path="/awaiting-approval"
-              element={<AwaitingBookApproval />}
-            ></Route>
-            <Route path='/edit-book/:id' element={<BookComponent />}></Route>
-          </Routes>
+          <div className="content-wrap">
+
+            <Routes>
+              <Route path="/" element={<Login />}></Route>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/users" element={<BookClubUsers />} />
+              <Route path="/dashboard" element={<BookClubDashBoard />} />
+              <Route path='/books' element={<ListBookComponent />}></Route>
+              <Route path='/add-book' element={<BookComponent />}></Route>
+              <Route
+                path="/awaiting-approval"
+                element={<AwaitingBookApproval />}
+              ></Route>
+              <Route path='/edit-book/:id' element={<BookComponent />}></Route>
+            </Routes>
+          </div>
         </AuthProvider>
 
         <FooterComponent />
