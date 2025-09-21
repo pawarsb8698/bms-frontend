@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
 import {
   listBooks,
   markAsBorrowed,
@@ -7,7 +6,6 @@ import {
 } from "../services/BookService";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-
 
 const getExtension = (filename) => filename.split(".").pop();
 
@@ -24,10 +22,19 @@ const ListBookComponent = () => {
     fetchBooks(currentPage);
   }, [currentPage]);
 
+  useEffect(() => {
+    const tooltipTriggerList = Array.from(
+      document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    );
+    tooltipTriggerList.forEach((tooltipTriggerEl) => {
+      new window.bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  }, []);
+
   const fetchBooks = (page) => {
     listBooks(page, booksPerPage)
       .then((response) => {
-        const decoded = jwtDecode(localStorage.getItem('auth_token'));
+        const decoded = jwtDecode(localStorage.getItem("auth_token"));
         setRole(decoded?.userType);
         setBooks(response.data.content);
         setTotalPages(response.data.totalPages);
@@ -36,6 +43,7 @@ const ListBookComponent = () => {
   };
 
   const addNewBook = () => navigator("/add-book");
+  const awaitingApproval = () => navigator("/awaiting-approval");
 
   const borrowBook = (bookId) => {
     markAsBorrowed(bookId)
@@ -81,10 +89,27 @@ const ListBookComponent = () => {
   return (
     <div className="container mt-4">
       {role === "ADMIN" && (
-        <div className="mb-4">
-          <button className="btn btn-primary" onClick={addNewBook}>
-            + Add Book
-          </button>
+        <div className="d-flex justify-content-between mb-4">
+          <div className="mb-4">
+            <button className="btn btn-primary" onClick={addNewBook}>
+              + Add Book
+            </button>
+          </div>
+          <div className="mb-4 d-flex justify-content-end">
+            <button
+              className="btn btn-primary position-relative"
+              onClick={awaitingApproval}
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              title="Click to view pending approvals"
+            >
+              <i className="bi bi-bell"></i> {/* Bell icon */}
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                5 {/* Dynamic pending count */}
+                <span className="visually-hidden">unread messages</span>
+              </span>
+            </button>
+          </div>
         </div>
       )}
 
@@ -118,6 +143,7 @@ const ListBookComponent = () => {
                       <p className="card-text">
                         <strong>Return Due Date:</strong> {book.returnDueDate}
                       </p>
+                      <span className="badge bg-danger">Unavailable</span>
                     </div>
                   ) : (
                     <div className="mb-3">
@@ -127,11 +153,8 @@ const ListBookComponent = () => {
 
                   <div className="mt-auto">
                     {book.borrowed ? (
-                      <button
-                        className="btn btn-success btn-sm me-2"
-                        onClick={() => returnBook(book.bookId)}
-                      >
-                        Return
+                      <button className="btn btn-warning btn-sm me-2">
+                        Approaval pending
                       </button>
                     ) : (
                       <button
@@ -163,6 +186,17 @@ const ListBookComponent = () => {
       {totalPages > 1 && (
         <nav className="mt-4">
           <ul className="pagination justify-content-center">
+            {/* First button */}
+            <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
+              <button
+                className="page-link"
+                onClick={() => paginate(0)}
+                disabled={currentPage === 0}
+              >
+                First
+              </button>
+            </li>
+
             {/* Prev button */}
             <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
               <button
@@ -233,6 +267,21 @@ const ListBookComponent = () => {
                 disabled={currentPage === totalPages - 1}
               >
                 Next
+              </button>
+            </li>
+
+            {/* Last button */}
+            <li
+              className={`page-item ${
+                currentPage === totalPages - 1 ? "disabled" : ""
+              }`}
+            >
+              <button
+                className="page-link"
+                onClick={() => paginate(totalPages - 1)}
+                disabled={currentPage === totalPages - 1}
+              >
+                Last
               </button>
             </li>
           </ul>

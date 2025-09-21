@@ -1,0 +1,98 @@
+/* Fade-in effect */
+.fade-in {
+  animation: fadeInAnimation 1s ease forwards;
+}
+
+@keyframes fadeInAnimation {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Button hover */
+.login-btn {
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.3s ease;
+  font-weight: 600;
+}
+
+.login-btn:hover {
+  background-color: #004085;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+}
+
+/* Floating label enhancements for form inputs */
+.form-floating .form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Slide-in animation for login card */
+@keyframes slideIn {
+  from {
+    transform: translateX(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.modern-login-card {
+  border-radius: 20px;
+  padding: 3rem;
+  animation: slideIn 0.8s ease forwards;
+}
+
+/* Optional: floating book particles for image panel */
+@keyframes float {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(10deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+.login-image::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  /* background-image: url("../assets/images/smallBooklet.png"); */
+  background-image: url("../assets/images/bookImageLogin.webp");
+  background-repeat: repeat;
+  opacity: 0.5;
+  animation: float 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Subtitle/Welcome text */
+.modern-login-card p.text-muted {
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .modern-login-card {
+    padding: 2rem;
+  }
+  .login-btn {
+    font-size: 1rem;
+  }
+}
+
+.login-image {
+  will-change: transform;
+}

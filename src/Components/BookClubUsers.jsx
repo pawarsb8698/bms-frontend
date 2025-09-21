@@ -1,55 +1,69 @@
-import React, { useEffect } from 'react'
-import { useState } from 'react';
-import { getUsers, makeUserAdmin, makeUserEmployee, makeUserAvailable, makeUserUnavailable } from '../services/UserService';
-import '../App.css';
+import React, { useEffect } from "react";
+import { useState } from "react";
+import {
+  getUsers,
+  makeUserAdmin,
+  makeUserEmployee,
+  makeUserAvailable,
+  makeUserUnavailable,
+} from "../services/UserService";
+import "../App.css";
 
 export const BookClubUsers = () => {
-  const [users, setUsers] = useState('');
+  const [users, setUsers] = useState("");
 
   useEffect(() => {
     getUsers()
       .then((response) => {
         setUsers(response.data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   }, []);
 
   function onMakeAdmin(userId) {
-    makeUserAdmin(userId).then((response) => {
-      console.log(response.data);
-      setUsers(response.data);
-    }).catch(error => {
-      console.error(error);
-    });
+    makeUserAdmin(userId)
+      .then((response) => {
+        console.log(response.data);
+        setUsers(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   function onMakeEmployee(userId) {
-    makeUserEmployee(userId).then((response) => {
-      console.log(response.data);
-      setUsers(response.data);
-    }).catch(error => {
-      console.error(error);
-    });
+    makeUserEmployee(userId)
+      .then((response) => {
+        console.log(response.data);
+        setUsers(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   function onMakeAvailable(userId) {
-    makeUserAvailable(userId).then((response) => {
-      console.log(response.data);
-      setUsers(response.data);
-    }).catch(error => {
-      console.error(error);
-    });
+    makeUserAvailable(userId)
+      .then((response) => {
+        console.log(response.data);
+        setUsers(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   function onMakeUnavailable(userId) {
-    makeUserUnavailable(userId).then((response) => {
-      console.log(response.data);
-      setUsers(response.data);
-    }).catch(error => {
-      console.error(error);
-    });
+    makeUserUnavailable(userId)
+      .then((response) => {
+        console.log(response.data);
+        setUsers(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   return (
@@ -58,11 +72,10 @@ export const BookClubUsers = () => {
       <table className="table table-bordered table-striped">
         <thead>
           <tr>
-            <th>#</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Is Available</th>
+            <th className="text-center">Sr. No.</th>
+            <th>User Name</th>
+            <th className="text-center">Role</th>
+            <th className="text-center">Is Available</th>
           </tr>
         </thead>
         <tbody>
@@ -75,9 +88,8 @@ export const BookClubUsers = () => {
           ) : (
             users.map((user, index) => (
               <tr key={user.userId}>
-                <td>{index + 1}</td>
+                <td className="text-center">{index + 1}</td>
                 <td>{user.username}</td>
-                <td>{user.email}</td>
                 <td className="text-center">
                   <button
                     className="btn btn-primary me-2"
