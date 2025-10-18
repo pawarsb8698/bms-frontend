@@ -10,6 +10,7 @@ const getExtension = (filename) => filename.split(".").pop();
 
 const ListBookComponent = () => {
   const [books, setBooks] = useState([]);
+  const [hasBorrowedAnyBook, setBorrowedBook] = useState([]);
   const [role, setRole] = useState([]);
   const [currentPage, setCurrentPage] = useState(0); // backend uses 0-based
   const [totalPages, setTotalPages] = useState(0);
@@ -33,16 +34,21 @@ const ListBookComponent = () => {
   const fetchBooks = (page) => {
     listBooks(page, booksPerPage)
       .then((response) => {
+        debugger;
         const decoded = jwtDecode(localStorage.getItem("auth_token"));
         setRole(decoded?.userType);
-        setBooks(response.data.content);
-        setTotalPages(response.data.totalPages);
+        setBooks(response.data.books.content);
+        setBorrowedBook(response.data.hasBorrowedAny);
+        setTotalPages(response.data.books.totalPages);
       })
       .catch((error) => console.error(error));
   };
 
   const addNewBook = () => navigator("/add-book");
   const awaitingApproval = () => navigator("/awaiting-approval");
+  const goBack = () => {
+    navigator("/dashboard");
+  };
 
   const borrowBook = (bookId) => {
     markAsBorrowed(bookId)
@@ -80,7 +86,15 @@ const ListBookComponent = () => {
   };
 
   return (
+
     <div className="container mt-4">
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <button className="btn btn-outline-secondary" onClick={goBack}>
+          ← Back
+        </button>
+        <h4 className="mb-0">All books</h4>
+        <div></div> {/* Spacer for alignment */}
+      </div>
       {role === "ADMIN" && (
         <div className="d-flex justify-content-between mb-4">
           <div className="mb-4">
@@ -112,9 +126,8 @@ const ListBookComponent = () => {
             <div className="col-sm-6 col-md-4 col-lg-3" key={book.bookId}>
               <div className="card h-100 shadow-sm">
                 <img
-                  src={`http://localhost:8080/api/books/images/${
-                    book.bookId
-                  }.${getExtension(book.imageName)}`}
+                  src={`http://localhost:8080/api/books/images/${book.bookId
+                    }.${getExtension(book.imageName)}`}
                   className="card-img-top"
                   alt={book.bookName}
                   style={{ height: "200px", objectFit: "cover" }}
@@ -145,18 +158,23 @@ const ListBookComponent = () => {
                   )}
 
                   <div className="mt-auto">
-                    {book.bookStatus != 'AVAILABLE' ? (
-                      <button className="btn btn-warning btn-sm me-2">
-                        Approaval pending
+                    {book.bookStatus !== 'AVAILABLE' ? (
+                      <button className="btn btn-warning btn-sm me-2" disabled>
+                        {book.bookStatus === 'BORROW_PENDING'
+                          ? 'Approval Pending'
+                          : 'Book Borrowed'}
                       </button>
                     ) : (
-                      <button
-                        className="btn btn-warning btn-sm me-2"
-                        onClick={() => borrowBook(book.bookId)}
-                      >
-                        Borrow
-                      </button>
+                      !hasBorrowedAnyBook && (
+                        <button
+                          className="btn btn-warning btn-sm me-2"
+                          onClick={() => borrowBook(book.bookId)}
+                        >
+                          Borrow
+                        </button>
+                      )
                     )}
+
                     {role === "ADMIN" && (
                       <button
                         className="btn btn-outline-secondary btn-sm"
@@ -166,6 +184,7 @@ const ListBookComponent = () => {
                       </button>
                     )}
                   </div>
+
                 </div>
               </div>
             </div>
@@ -250,9 +269,8 @@ const ListBookComponent = () => {
 
             {/* Next button */}
             <li
-              className={`page-item ${
-                currentPage === totalPages - 1 ? "disabled" : ""
-              }`}
+              className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+                }`}
             >
               <button
                 className="page-link"
@@ -265,9 +283,8 @@ const ListBookComponent = () => {
 
             {/* Last button */}
             <li
-              className={`page-item ${
-                currentPage === totalPages - 1 ? "disabled" : ""
-              }`}
+              className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+                }`}
             >
               <button
                 className="page-link"
